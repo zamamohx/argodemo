@@ -1,15 +1,11 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: nginx-deployment
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-deployment
-  namespace: nginx-deployment
+  labels:
+    app: nginx
+  name: nginx
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: nginx
@@ -19,22 +15,21 @@ spec:
         app: nginx
     spec:
       containers:
-        - name: nginx
-          image: nginx
-          ports:
-            - containerPort: 80
+      - image: nginx
+        name: nginx
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx-service
-  namespace: nginx-deployment
+  labels:
+    app: nginx
+  name: nginx
+  namespace: default
 spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
   selector:
     app: nginx
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 80
   type: NodePort
-
